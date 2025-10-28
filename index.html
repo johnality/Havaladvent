@@ -1,1 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HAVALADVENT CALENDAR</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Cardo&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f5f5f5;
+  color: #222;
+  text-align: center;
+  margin: 0;
+  padding: 10px;
+}
+h1 {
+  font-size: 3.2em;
+  margin: 20px 0 0.2em 0;
+  color: #b22222;
+  font-family: 'Cardo', serif;
+}
+h2 {
+  font-size: 1.4em;
+  font-weight: 400;
+  margin: 0 0 40px 0;
+  color: #444;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto 40px auto;
+}
+
+.square {
+  background: #ddd;
+  border: 2px solid #bbb;
+  border-radius: 50%;
+  aspect-ratio: 1/1;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.2s;
+  overflow: hidden;
+}
+.square:hover { transform: scale(1.05); }
+
+.square span {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2em;
+  color: #b22222;
+  font-family: 'Cardo', serif;
+}
+
+.revealed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+.revealed img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+/* X close button inside each square */
+.squareResetBtn {
+  position: absolute;
+  top: 6px; right: 8px;
+  font-size: 1.1em;
+  border: none;
+  background: none;
+  color: #b22222;
+  cursor: pointer;
+  z-index: 2;
+}
+
+/* Modal styling */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.8);
+  justify-content: center;
+  align-items: center;
+}
+.modal-content {
+  background: #fff;
+  color: #222;
+  padding: 30px;
+  border-radius: 15px;
+  max-width: 800px;
+  width: 90%;
+  text-align: left;
+  font-size: 1.1rem;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+.close {
+  position: absolute;
+  top: 10px; right: 15px;
+  font-size: 1.5em;
+  cursor: pointer;
+  color: #b22222;
+}
+.poster img {
+  max-height: 400px;
+  border-radius: 10px;
+}
+.film-info {
+  flex: 1;
+  margin-left: 20px;
+}
+#modalTitle { font-family: 'Cardo', serif; font-size: 2rem; margin: 0; }
+#modalYear { font-size: 1.2rem; opacity: 0.7; margin: 3px 0 10px 0; }
+.tags {
+  margin-top: 15px;
+  font-style: italic;
+  color: #555;
+  font-size: 1rem;
+}
+</style>
+</head>
+<body>
+
+<h1>HAVALADVENT CALENDAR</h1>
+<h2>Film Advent Calendar</h2>
+<div class="grid" id="calendar"></div>
+
+<!-- Modal -->
+<div class="modal" id="filmModal">
+  <div class="modal-content">
+    <span class="close" id="closeModal">&times;</span>
+    <div class="poster">
+      <img id="modalPoster" src="" alt="Film Poster">
+    </div>
+    <div class="film-info">
+      <h3 id="modalTitle">Film Title</h3>
+      <span id="modalYear">(Year)</span>
+      <p id="modalDesc">Description goes here.</p>
+      <p id="modalTags" class="tags"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+const calendar = document.getElementById('calendar');
+let openedSquares = JSON.parse(localStorage.getItem('openedSquaresHAVAL')) || {};
+
+// ✅ Generate years instead of kanji
+const startYear = 2001;
+const numDays = 24;
+const years = Array.from({length: numDays}, (_, i) => startYear + i);
+
+// ✅ Example film data (add your others below in same format)
+const films = [
+
+
+
+ {    title: "Lilo and Stitch",    year: 2002,    image: "images/lilo.jpg",    poster: "images/lilo_poster.jpg",    runtime: "85 min",    rottenScore: "86%",    letterboxdScore: "4.1",    description:”A mischievous alien is adopted by an independent little girl in Hawaii. Edgier than many Disney films, this fun and charming story explores issues of family and loyalty.",    tags: ["Animation", "Adventure", "Comedy"],    streaming: "images/disney.png"},
+ { title: "Toy Story 3", year: 2010, image: "images/toy.jpg", poster: "images/toy_poster.jpg", runtime: "102 min", rottenScore: "98%", letterboxdScore: "4.0", description: “Andy’s toys find themselves shipped off to a day care center with a sinister secret. This surprisingly brilliant third installment deftly blends comedy, adventure, and raw emotion.", tags: [Animation"", "Adventure", “Comedy”], streaming: "images/disney.png"},
+ { title: "Summer of Soul", year: 2021, image: "images/summer.jpg", poster: "images/summer_poster.jpg", runtime: "117 min", rottenScore: "99%", letterboxdScore: "4.2", description: “In 1969, 300,000 people attended a Harlem festival celebrating Black music, culture, and pride. Interweaving incredible live footage with revealing interviews, Questlove’s joyful documentary captures the spirit of the era.", tags: ["Documentary", "Music"], streaming: "images/disney.png"},
+ { title: "Coffee and Cigarettes", year: 2003, image: "images/coffee.jpg", poster: "images/coffee_poster.jpg", runtime: "97 min", rottenScore: "63%", letterboxdScore: "3.8", description: “An anthology of shorts that all involve unique characters conversing over coffee and cigarettes. A quirkily engaging, star-studded film from American indie icon Jim Jarmusch. ", tags: ["Comedy", "Drama"], streaming: "images/hbo.png"},
+ { title: "Howl’s Moving Castle", year: 2004, image: "images/howl.jpg", poster: "images/howl_poster.jpg", runtime: "119 min", rottenScore: "88%", letterboxdScore: "4.4", description: “A girl gets cursed by a witch, meets a wizard, and gets caught up in a resistance. Exquisitely crafted by master animator Hayao Miyazaki, this fantastical story will delight audiences.", tags: ["Animation", "Fantasy"], streaming: "images/hbo.png"},
+ { title: "The Great Beauty", year: 2013, image: "images/great.jpg", poster: "images/great_poster.jpg", runtime: "142 min", rottenScore: "91%", letterboxdScore: "4.1", description: “A 65 year old playboy reflects on the absurdity and exquisite beauty of life in Rome. Dazzlingly ambitious, thoroughly enthralling, and beautifully filmed by Paolo Sorrentino.", tags: ["Drama", "Comedy"], streaming: "images/hbo.png"},
+ { title: "The Lighthouse", year: 2019, image: "images/light.jpg", poster: "images/light_poster.jpg", runtime: "109 min", rottenScore: "90%", letterboxdScore: "4.0", description: “Two lighthouse keepers try to keep their sanity on a remote, mysterious island. A gripping thriller brilliantly filmed by Robert Eggers, with powerhouse performances from Dafoe and Pattinson.", tags: ["Thriller", "Drama"], streaming: "images/hbo.png"},
+ { title: "X", year: 2022, image: "images/x.jpg", poster: "images/x_poster.jpg", runtime: "106 min", rottenScore: "94%", letterboxdScore: "3.4", description: “In the 1970s, a crew of filmmakers set out to make a porno at the farm of a reclusive, elderly couple. Ti West’s fresh spin on the slasher formula. ", tags: ["Horror", "Thriller"], streaming: "images/hbo.png"},
+
+  
+
+];
+
+// ✅ Build grid
+films.forEach((film, i) => {
+  const square = document.createElement('div');
+  square.classList.add('square');
+  square.dataset.index = i;
+  square.innerHTML = `
+    <button class="squareResetBtn">×</button>
+    <span>${years[i]}</span>
+  `;
+  
+  // If already opened (saved in localStorage)
+  if (openedSquares[i]) revealSquare(square, film);
+
+  // Open film modal on click
+  square.addEventListener('click', (e) => {
+    if (e.target.classList.contains('squareResetBtn')) return;
+    if (!square.classList.contains('revealed')) {
+      revealSquare(square, film);
+      openedSquares[i] = true;
+      localStorage.setItem('openedSquaresHAVAL', JSON.stringify(openedSquares));
+    } else {
+      openModal(film);
+    }
+  });
+
+  // Add close functionality for individual squares
+  square.querySelector('.squareResetBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    square.classList.remove('revealed');
+    square.innerHTML = `<button class="squareResetBtn">×</button><span>${years[i]}</span>`;
+    delete openedSquares[i];
+    localStorage.setItem('openedSquaresHAVAL', JSON.stringify(openedSquares));
+  });
+
+  calendar.appendChild(square);
+});
+
+// ✅ Reveal a film square (shows image)
+function revealSquare(square, film) {
+  square.classList.add('revealed');
+  square.innerHTML = `
+    <button class="squareResetBtn">×</button>
+    <img src="${film.image}" alt="${film.title}">
+  `;
+  const closeBtn = square.querySelector('.squareResetBtn');
+  closeBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    square.classList.remove('revealed');
+    square.innerHTML = `<button class="squareResetBtn">×</button><span>${film.year}</span>`;
+    delete openedSquares[square.dataset.index];
+    localStorage.setItem('openedSquaresHAVAL', JSON.stringify(openedSquares));
+  });
+  square.querySelector('img').addEventListener('click', e => {
+    e.stopPropagation();
+    openModal(film);
+  });
+}
+
+// ✅ Modal controls
+const modal = document.getElementById('filmModal');
+const closeModal = document.getElementById('closeModal');
+
+function openModal(film) {
+  document.getElementById('modalPoster').src = film.poster;
+  document.getElementById('modalTitle').textContent = film.title;
+  document.getElementById('modalYear').textContent = `(${film.year})`;
+  document.getElementById('modalDesc').textContent = film.description;
+  document.getElementById('modalTags').textContent = film.tags || "";
+  modal.style.display = "flex";
+}
+
+closeModal.onclick = () => { modal.style.display = 'none'; };
+window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+</script>
+
+</body>
+</html>
