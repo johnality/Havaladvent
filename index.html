@@ -28,7 +28,7 @@ h1 {
   grid-template-columns: repeat(5, 1fr);
   gap: 20px;
   max-width: 1200px;
-  margin: 0 auto 40px auto;
+  margin: 40px auto 40px auto; /* increased top margin from 0 to 40px */
 }
 
 .square {
@@ -47,7 +47,7 @@ h1 {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 2em;
+  font-size: 3em;
   color: #b22222;
   font-family: 'Cardo', serif;
 }
@@ -100,7 +100,7 @@ h1 {
   color: #222;
   padding: 30px;
   border-radius: 15px;
-  max-width: 800px;
+max-width: 640px; /* about 80% of previous width */
   width: 90%;
   text-align: left;
   font-size: 1.1rem;
@@ -151,7 +151,7 @@ h1 {
     </div>
     <div class="film-info">
       <h3 id="modalTitle">Film Title</h3>
-      <span id="modalYear">(Year)</span>
+      <span id="modalYear">(Year)</span><br>
       <div id="modalMeta" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;"></div>
       <p id="modalDesc">Description goes here.</p>
       <p id="modalTags" class="tags"></p>
@@ -165,7 +165,7 @@ const calendar = document.getElementById('calendar');
 let openedSquares = JSON.parse(localStorage.getItem('openedSquaresHAVAL')) || {};
 
 const startYear = 2001;
-const numDays = 24;
+const numDays = 25;
 const years = Array.from({length: numDays}, (_, i) => startYear + i);
 
 const films = [
