@@ -5,7 +5,7 @@
 <title>HAVALADVENT CALENDAR</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cardo&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Patua+One&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Patua+One&display=swap" rel="stylesheet">
 
 <style>
 body {
@@ -23,8 +23,6 @@ h1 {
   font-family: 'Patua One', serif;
 }
 
-
-  
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -140,7 +138,7 @@ h1 {
 <h1>HAVALADVENT CALENDAR</h1>
 <div class="grid" id="calendar"></div>
 
-  <button id="resetAll" style="margin: 20px auto; display: block; padding: 10px 20px; font-size: 1rem; cursor: pointer; border-radius: 8px; border: none; background-color: #b22222; color: white;">
+<button id="resetAll" style="margin: 20px auto; display: block; padding: 10px 20px; font-size: 1rem; cursor: pointer; border-radius: 8px; border: none; background-color: #b22222; color: white;">
   RESET ALL
 </button>
 
@@ -151,29 +149,27 @@ h1 {
     <div class="poster">
       <img id="modalPoster" src="" alt="Film Poster">
     </div>
-
-
-<div class="film-info">
-  <h3 id="modalTitle">Film Title</h3>
-  <span id="modalYear">(Year)</span>
-<div id="modalMeta" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;"></div>
-
-  <p id="modalDesc">Description goes here.</p>
-  <p id="modalTags" class="tags"></p>
-  <img id="modalStreaming" alt="Streaming Service" style="height: 30px; margin-top: 10px;">
+    <div class="film-info">
+      <h3 id="modalTitle">Film Title</h3>
+      <span id="modalYear">(Year)</span>
+      <div id="modalMeta" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;"></div>
+      <p id="modalDesc">Description goes here.</p>
+      <p id="modalTags" class="tags"></p>
+      <img id="modalStreaming" alt="Streaming Service" style="height: 30px; margin-top: 10px;">
+    </div>
+  </div>
 </div>
-    
+
 <script>
 const calendar = document.getElementById('calendar');
 let openedSquares = JSON.parse(localStorage.getItem('openedSquaresHAVAL')) || {};
 
-// ✅ Generate years instead of kanji
 const startYear = 2001;
 const numDays = 24;
 const years = Array.from({length: numDays}, (_, i) => startYear + i);
 
-// ✅ Example film data (add your others below in same format)
 const films = [
+
 
 
 
@@ -190,7 +186,8 @@ const films = [
  { title: "X", year: 2022, image: "images/x.jpg", poster: "images/x_poster.jpg", runtime: "106 min", rottenScore: "94%", letterboxdScore: "3.4", description: "In the 1970s, a crew of filmmakers set out to make a porno at the farm of a reclusive, elderly couple. Ti West’s fresh spin on the slasher formula.", tags: ["Horror", "Thriller"], streaming: "images/hbo_logo.png"},
  { title: "One of Them Days", year: 2025, image: "images/one.jpg", poster: "images/one_poster.jpg", runtime: "97 min", rottenScore: "94%", letterboxdScore: "3.4", description: "Best friends Dreux and Alyssa go to extremes to find rent money in a comical race against the clock. Keke Palmer and SZA dish out laughter and chemistry to spare in Lawrence Lamont’s feelgood buddy-comedy throwback.", tags: ["Comedy"], streaming: "images/netflix.png"},
 
-  
+
+
 ];
 
 // ✅ Build grid
@@ -198,19 +195,10 @@ films.forEach((film, i) => {
   const square = document.createElement('div');
   square.classList.add('square');
   square.dataset.index = i;
-  
-  
-  
-square.innerHTML = `
-  <span>${years[i]}</span>
-`;
+  square.innerHTML = `<span>${years[i]}</span>`;
 
-
-  
-  // If already opened (saved in localStorage)
   if (openedSquares[i]) revealSquare(square, film);
 
-  // Open film modal on click
   square.addEventListener('click', (e) => {
     if (e.target.classList.contains('squareResetBtn')) return;
     if (!square.classList.contains('revealed')) {
@@ -220,20 +208,6 @@ square.innerHTML = `
     } else {
       openModal(film);
     }
-  });
-
-  // Add close functionality for individual squares
-  square.querySelector('.squareResetBtn').addEventListener('click', (e) => {
-    e.stopPropagation();
-    square.classList.remove('revealed');
-
-    square.innerHTML = `
-  <button class="squareResetBtn">×</button>
-  <img src="${film.image}" alt="${film.title}">
-`;
-    
-    delete openedSquares[i];
-    localStorage.setItem('openedSquaresHAVAL', JSON.stringify(openedSquares));
   });
 
   calendar.appendChild(square);
@@ -250,7 +224,7 @@ function revealSquare(square, film) {
   closeBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     square.classList.remove('revealed');
-    square.innerHTML = `<button class="squareResetBtn">×</button><span>${film.year}</span>`;
+    square.innerHTML = `<span>${film.year}</span>`;
     delete openedSquares[square.dataset.index];
     localStorage.setItem('openedSquaresHAVAL', JSON.stringify(openedSquares));
   });
@@ -269,44 +243,14 @@ function openModal(film) {
   document.getElementById('modalTitle').textContent = film.title;
   document.getElementById('modalYear').textContent = `(${film.year})`;
 
-// Add runtime + icons + scores
-const metaDiv = document.getElementById('modalMeta');
-metaDiv.innerHTML = ''; // clear old info
-if (film.runtime) {
-  const runtimeSpan = document.createElement('span');
-  runtimeSpan.textContent = film.runtime;
-  metaDiv.appendChild(runtimeSpan);
-}
-if (film.rottenScore) {
-  const rtIcon = document.createElement('img');
-  rtIcon.src = 'images/rotten_icon.png';
-  rtIcon.alt = 'Rotten Tomatoes';
-  rtIcon.style.height = '20px';
-  rtIcon.style.verticalAlign = 'middle';
-  metaDiv.appendChild(rtIcon);
+  const metaDiv = document.getElementById('modalMeta');
+  metaDiv.innerHTML = '';
+  if (film.runtime) metaDiv.innerHTML += `<span>${film.runtime}</span>`;
+  if (film.rottenScore) metaDiv.innerHTML += `<img src='images/rotten_icon.png' alt='Rotten Tomatoes' style='height:20px;vertical-align:middle;'> <span>${film.rottenScore}</span>`;
+  if (film.letterboxdScore) metaDiv.innerHTML += `<img src='images/letterboxd_icon.png' alt='Letterboxd' style='height:20px;vertical-align:middle;'> <span>${film.letterboxdScore}</span>`;
 
-  const rtScore = document.createElement('span');
-  rtScore.textContent = film.rottenScore;
-  metaDiv.appendChild(rtScore);
-}
-if (film.letterboxdScore) {
-  const lbIcon = document.createElement('img');
-  lbIcon.src = 'images/letterboxd_icon.png';
-  lbIcon.alt = 'Letterboxd';
-  lbIcon.style.height = '20px';
-  lbIcon.style.verticalAlign = 'middle';
-  metaDiv.appendChild(lbIcon);
-
-  const lbScore = document.createElement('span');
-  lbScore.textContent = film.letterboxdScore;
-  metaDiv.appendChild(lbScore);
-}
-
-
-  // Format tags with " / "
   document.getElementById('modalTags').textContent = film.tags ? film.tags.join(' / ') : '';
 
-  // Streaming service icon
   const streamingImg = document.getElementById('modalStreaming');
   if (film.streaming) {
     streamingImg.src = film.streaming;
@@ -319,7 +263,6 @@ if (film.letterboxdScore) {
   modal.style.display = "flex";
 }
 
-
 closeModal.onclick = () => { modal.style.display = 'none'; };
 window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
 
@@ -327,7 +270,6 @@ document.getElementById('resetAll').addEventListener('click', () => {
   localStorage.removeItem('openedSquaresHAVAL');
   location.reload();
 });
-
 </script>
 
 </body>
