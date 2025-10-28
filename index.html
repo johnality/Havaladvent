@@ -5,6 +5,7 @@
 <title>HAVALADVENT CALENDAR</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cardo&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Patua+One&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
 body {
@@ -19,15 +20,11 @@ h1 {
   font-size: 3.2em;
   margin: 20px 0 0.2em 0;
   color: #b22222;
-  font-family: 'Cardo', serif;
-}
-h2 {
-  font-size: 1.4em;
-  font-weight: 400;
-  margin: 0 0 40px 0;
-  color: #444;
+  font-family: 'Patua One', serif;
 }
 
+
+  
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -141,7 +138,6 @@ h2 {
 <body>
 
 <h1>HAVALADVENT CALENDAR</h1>
-<h2>Film Advent Calendar</h2>
 <div class="grid" id="calendar"></div>
 
   <button id="resetAll" style="margin: 20px auto; display: block; padding: 10px 20px; font-size: 1rem; cursor: pointer; border-radius: 8px; border: none; background-color: #b22222; color: white;">
@@ -160,8 +156,8 @@ h2 {
 <div class="film-info">
   <h3 id="modalTitle">Film Title</h3>
   <span id="modalYear">(Year)</span>
-  <p id="modalRuntime"></p>
-  <p id="modalScores"></p>
+<div id="modalMeta" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;"></div>
+
   <p id="modalDesc">Description goes here.</p>
   <p id="modalTags" class="tags"></p>
   <img id="modalStreaming" alt="Streaming Service" style="height: 30px; margin-top: 10px;">
@@ -182,16 +178,16 @@ const films = [
 
 
  { title: "Lilo and Stitch",    year: 2002,    image: "images/lilo.jpg",    poster: "images/lilo_poster.jpg",    runtime: "85 min",    rottenScore: "86%",    letterboxdScore: "4.1",    description: "A mischievous alien is adopted by an independent little girl in Hawaii. Edgier than many Disney films, this fun and charming story explores issues of family and loyalty.",    tags: ["Animation", "Adventure", "Comedy"],    streaming: "images/disney.png"},
- { title: "Coffee and Cigarettes", year: 2003, image: "images/coffee.jpg", poster: "images/coffee_poster.jpg", runtime: "97 min", rottenScore: "63%", letterboxdScore: "3.8", description: "An anthology of shorts that all involve unique characters conversing over coffee and cigarettes. A quirkily engaging, star-studded film from American indie icon Jim Jarmusch.", tags: ["Comedy", "Drama"], streaming: "images/hbo.png"},
- { title: "Howl’s Moving Castle", year: 2004, image: "images/howl.jpg", poster: "images/howl_poster.jpg", runtime: "119 min", rottenScore: "88%", letterboxdScore: "4.4", description: "A girl gets cursed by a witch, meets a wizard, and gets caught up in a resistance. Exquisitely crafted by master animator Hayao Miyazaki, this fantastical story will delight audiences.", tags: ["Animation", "Fantasy"], streaming: "images/hbo.png"},
+ { title: "Coffee and Cigarettes", year: 2003, image: "images/coffee.jpg", poster: "images/coffee_poster.jpg", runtime: "97 min", rottenScore: "63%", letterboxdScore: "3.8", description: "An anthology of shorts that all involve unique characters conversing over coffee and cigarettes. A quirkily engaging, star-studded film from American indie icon Jim Jarmusch.", tags: ["Comedy", "Drama"], streaming: "images/hbo_logo.png"},
+ { title: "Howl’s Moving Castle", year: 2004, image: "images/howl.jpg", poster: "images/howl_poster.jpg", runtime: "119 min", rottenScore: "88%", letterboxdScore: "4.4", description: "A girl gets cursed by a witch, meets a wizard, and gets caught up in a resistance. Exquisitely crafted by master animator Hayao Miyazaki, this fantastical story will delight audiences.", tags: ["Animation", "Fantasy"], streaming: "images/hbo_logo.png"},
  { title: "Toy Story 3", year: 2010, image: "images/toy.jpg", poster: "images/toy_poster.jpg", runtime: "102 min", rottenScore: "98%", letterboxdScore: "4.0", description: "Andy’s toys find themselves shipped off to a day care center with a sinister secret. This surprisingly brilliant third installment deftly blends comedy, adventure, and raw emotion.", tags: ["Animation", "Adventure", "Comedy"], streaming: "images/disney.png"},
- { title: "The Great Beauty", year: 2013, image: "images/great.jpg", poster: "images/great_poster.jpg", runtime: "142 min", rottenScore: "91%", letterboxdScore: "4.1", description: "A 65 year old playboy reflects on the absurdity and exquisite beauty of life in Rome. Dazzlingly ambitious, thoroughly enthralling, and beautifully filmed by Paolo Sorrentino.", tags: ["Drama", "Comedy"], streaming: "images/hbo.png"},
+ { title: "The Great Beauty", year: 2013, image: "images/great.jpg", poster: "images/great_poster.jpg", runtime: "142 min", rottenScore: "91%", letterboxdScore: "4.1", description: "A 65 year old playboy reflects on the absurdity and exquisite beauty of life in Rome. Dazzlingly ambitious, thoroughly enthralling, and beautifully filmed by Paolo Sorrentino.", tags: ["Drama", "Comedy"], streaming: "images/hbo_logo.png"},
  { title: "Tangerine", year: 2015, image: "images/tang.jpg", poster: "images/tang_poster.jpg", runtime: "87 min", rottenScore: "96%", letterboxdScore: "3.9", description: "A trans sex worker embarks on a mission through Los Angeles subcultures on Christmas Eve. Sean Baker’s wonderful comedy-drama shatters conventions and techniques.", tags: ["Drama", "Comedy"], streaming: "images/netflix.png"},
  { title: "Under the Shadow", year: 2016, image: "images/under.jpg", poster: "images/under_poster.jpg", runtime: "84 min", rottenScore: "99%", letterboxdScore: "3.5", description: "After her home is hit by a missile, a mother becomes convinced that an evil force is trying to possess her daughter. Babak Anvari deftly blends genres to deliver an effective chiller with thought-provoking themes.", tags: ["Horror", "Thriller"], streaming: "images/netflix.png"},
  { title: "Roma", year: 2018, image: "images/roma.jpg", poster: "images/roma_poster.jpg", runtime: "135 min", rottenScore: "96%", letterboxdScore: "4.1", description: "In 1970s Mexico City, a domestic worker helps a wealthy family after the father abandons them. Alfonso Cuarón tells a powerfully personal story with enthralling command of the visual craft.", tags: ["Drama"], streaming: "images/netflix.png"},
-  { title: "The Lighthouse", year: 2019, image: "images/light.jpg", poster: "images/light_poster.jpg", runtime: "109 min", rottenScore: "90%", letterboxdScore: "4.0", description: "Two lighthouse keepers try to keep their sanity on a remote, mysterious island. A gripping thriller brilliantly filmed by Robert Eggers, with powerhouse performances from Dafoe and Pattinson.", tags: ["Thriller", "Drama"], streaming: "images/hbo.png"},
+  { title: "The Lighthouse", year: 2019, image: "images/light.jpg", poster: "images/light_poster.jpg", runtime: "109 min", rottenScore: "90%", letterboxdScore: "4.0", description: "Two lighthouse keepers try to keep their sanity on a remote, mysterious island. A gripping thriller brilliantly filmed by Robert Eggers, with powerhouse performances from Dafoe and Pattinson.", tags: ["Thriller", "Drama"], streaming: "images/hbo_logo.png"},
  { title: "Summer of Soul", year: 2021, image: "images/summer.jpg", poster: "images/summer_poster.jpg", runtime: "117 min", rottenScore: "99%", letterboxdScore: "4.2", description: "In 1969, 300,000 people attended a Harlem festival celebrating Black music, culture, and pride. Interweaving incredible live footage with revealing interviews, Questlove’s joyful documentary captures the spirit of the era.", tags: ["Documentary", "Music"], streaming: "images/disney.png"},
- { title: "X", year: 2022, image: "images/x.jpg", poster: "images/x_poster.jpg", runtime: "106 min", rottenScore: "94%", letterboxdScore: "3.4", description: "In the 1970s, a crew of filmmakers set out to make a porno at the farm of a reclusive, elderly couple. Ti West’s fresh spin on the slasher formula.", tags: ["Horror", "Thriller"], streaming: "images/hbo.png"},
+ { title: "X", year: 2022, image: "images/x.jpg", poster: "images/x_poster.jpg", runtime: "106 min", rottenScore: "94%", letterboxdScore: "3.4", description: "In the 1970s, a crew of filmmakers set out to make a porno at the farm of a reclusive, elderly couple. Ti West’s fresh spin on the slasher formula.", tags: ["Horror", "Thriller"], streaming: "images/hbo_logo.png"},
  { title: "One of Them Days", year: 2025, image: "images/one.jpg", poster: "images/one_poster.jpg", runtime: "97 min", rottenScore: "94%", letterboxdScore: "3.4", description: "Best friends Dreux and Alyssa go to extremes to find rent money in a comical race against the clock. Keke Palmer and SZA dish out laughter and chemistry to spare in Lawrence Lamont’s feelgood buddy-comedy throwback.", tags: ["Comedy"], streaming: "images/netflix.png"},
 
   
@@ -202,10 +198,14 @@ films.forEach((film, i) => {
   const square = document.createElement('div');
   square.classList.add('square');
   square.dataset.index = i;
-  square.innerHTML = `
-    <button class="squareResetBtn">×</button>
-    <span>${years[i]}</span>
-  `;
+  
+  
+  
+square.innerHTML = `
+  <span>${years[i]}</span>
+`;
+
+
   
   // If already opened (saved in localStorage)
   if (openedSquares[i]) revealSquare(square, film);
@@ -226,7 +226,12 @@ films.forEach((film, i) => {
   square.querySelector('.squareResetBtn').addEventListener('click', (e) => {
     e.stopPropagation();
     square.classList.remove('revealed');
-    square.innerHTML = `<button class="squareResetBtn">×</button><span>${years[i]}</span>`;
+
+    square.innerHTML = `
+  <button class="squareResetBtn">×</button>
+  <img src="${film.image}" alt="${film.title}">
+`;
+    
     delete openedSquares[i];
     localStorage.setItem('openedSquaresHAVAL', JSON.stringify(openedSquares));
   });
@@ -264,11 +269,39 @@ function openModal(film) {
   document.getElementById('modalTitle').textContent = film.title;
   document.getElementById('modalYear').textContent = `(${film.year})`;
 
-  // Add runtime + scores
-  document.getElementById('modalRuntime').textContent = film.runtime ? `Runtime: ${film.runtime}` : '';
-  document.getElementById('modalScores').textContent = film.rottenScore && film.letterboxdScore 
-    ? `Rotten Tomatoes: ${film.rottenScore}  |  Letterboxd: ${film.letterboxdScore}`
-    : '';
+// Add runtime + icons + scores
+const metaDiv = document.getElementById('modalMeta');
+metaDiv.innerHTML = ''; // clear old info
+if (film.runtime) {
+  const runtimeSpan = document.createElement('span');
+  runtimeSpan.textContent = film.runtime;
+  metaDiv.appendChild(runtimeSpan);
+}
+if (film.rottenScore) {
+  const rtIcon = document.createElement('img');
+  rtIcon.src = 'images/rotten_icon.png';
+  rtIcon.alt = 'Rotten Tomatoes';
+  rtIcon.style.height = '20px';
+  rtIcon.style.verticalAlign = 'middle';
+  metaDiv.appendChild(rtIcon);
+
+  const rtScore = document.createElement('span');
+  rtScore.textContent = film.rottenScore;
+  metaDiv.appendChild(rtScore);
+}
+if (film.letterboxdScore) {
+  const lbIcon = document.createElement('img');
+  lbIcon.src = 'images/letterboxd_icon.png';
+  lbIcon.alt = 'Letterboxd';
+  lbIcon.style.height = '20px';
+  lbIcon.style.verticalAlign = 'middle';
+  metaDiv.appendChild(lbIcon);
+
+  const lbScore = document.createElement('span');
+  lbScore.textContent = film.letterboxdScore;
+  metaDiv.appendChild(lbScore);
+}
+
 
   // Format tags with " / "
   document.getElementById('modalTags').textContent = film.tags ? film.tags.join(' / ') : '';
@@ -291,10 +324,8 @@ closeModal.onclick = () => { modal.style.display = 'none'; };
 window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
 
 document.getElementById('resetAll').addEventListener('click', () => {
-  if (confirm('Reset all boxes?')) {
-    localStorage.removeItem('openedSquaresHAVAL');
-    location.reload();
-  }
+  localStorage.removeItem('openedSquaresHAVAL');
+  location.reload();
 });
 
 </script>
