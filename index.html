@@ -73,11 +73,18 @@ h2 {
 /* X close button inside each square */
 .squareResetBtn {
   position: absolute;
-  top: 6px; right: 8px;
-  font-size: 1.1em;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.3em;
   border: none;
-  background: none;
+  background: rgba(255,255,255,0.8);
   color: #b22222;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  line-height: 20px;
+  text-align: center;
   cursor: pointer;
   z-index: 2;
 }
@@ -137,6 +144,10 @@ h2 {
 <h2>Film Advent Calendar</h2>
 <div class="grid" id="calendar"></div>
 
+  <button id="resetAll" style="margin: 20px auto; display: block; padding: 10px 20px; font-size: 1rem; cursor: pointer; border-radius: 8px; border: none; background-color: #b22222; color: white;">
+  RESET ALL
+</button>
+
 <!-- Modal -->
 <div class="modal" id="filmModal">
   <div class="modal-content">
@@ -144,15 +155,18 @@ h2 {
     <div class="poster">
       <img id="modalPoster" src="" alt="Film Poster">
     </div>
-    <div class="film-info">
-      <h3 id="modalTitle">Film Title</h3>
-      <span id="modalYear">(Year)</span>
-      <p id="modalDesc">Description goes here.</p>
-      <p id="modalTags" class="tags"></p>
-    </div>
-  </div>
-</div>
 
+
+<div class="film-info">
+  <h3 id="modalTitle">Film Title</h3>
+  <span id="modalYear">(Year)</span>
+  <p id="modalRuntime"></p>
+  <p id="modalScores"></p>
+  <p id="modalDesc">Description goes here.</p>
+  <p id="modalTags" class="tags"></p>
+  <img id="modalStreaming" alt="Streaming Service" style="height: 30px; margin-top: 10px;">
+</div>
+    
 <script>
 const calendar = document.getElementById('calendar');
 let openedSquares = JSON.parse(localStorage.getItem('openedSquaresHAVAL')) || {};
@@ -249,13 +263,40 @@ function openModal(film) {
   document.getElementById('modalPoster').src = film.poster;
   document.getElementById('modalTitle').textContent = film.title;
   document.getElementById('modalYear').textContent = `(${film.year})`;
+
+  // Add runtime + scores
+  document.getElementById('modalRuntime').textContent = film.runtime ? `Runtime: ${film.runtime}` : '';
+  document.getElementById('modalScores').textContent = film.rottenScore && film.letterboxdScore 
+    ? `Rotten Tomatoes: ${film.rottenScore}  |  Letterboxd: ${film.letterboxdScore}`
+    : '';
+
+  // Format tags with " / "
+  document.getElementById('modalTags').textContent = film.tags ? film.tags.join(' / ') : '';
+
+  // Streaming service icon
+  const streamingImg = document.getElementById('modalStreaming');
+  if (film.streaming) {
+    streamingImg.src = film.streaming;
+    streamingImg.style.display = 'inline';
+  } else {
+    streamingImg.style.display = 'none';
+  }
+
   document.getElementById('modalDesc').textContent = film.description;
-  document.getElementById('modalTags').textContent = film.tags || "";
   modal.style.display = "flex";
 }
 
+
 closeModal.onclick = () => { modal.style.display = 'none'; };
 window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+
+document.getElementById('resetAll').addEventListener('click', () => {
+  if (confirm('Reset all boxes?')) {
+    localStorage.removeItem('openedSquaresHAVAL');
+    location.reload();
+  }
+});
+
 </script>
 
 </body>
