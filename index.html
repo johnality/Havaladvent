@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>HAVALADVENT CALENDAR</title>
+<title>HAVILADVENT CALENDAR</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cardo&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Patua+One&display=swap" rel="stylesheet">
@@ -28,7 +28,7 @@ h1 {
   grid-template-columns: repeat(5, 1fr);
   gap: 20px;
   max-width: 1200px;
-  margin: 40px auto 40px auto; /* increased top margin from 0 to 40px */
+  margin: 40px auto;
 }
 
 .square {
@@ -65,7 +65,7 @@ h1 {
   cursor: pointer;
 }
 
-/* X close button inside each square */
+/* X close button */
 .squareResetBtn {
   position: absolute;
   top: 5px;
@@ -74,7 +74,6 @@ h1 {
   font-size: 1.3em;
   border: none;
   background: rgba(255,255,255,0.8);
-  color: #b22222;
   border-radius: 50%;
   width: 24px;
   height: 24px;
@@ -84,7 +83,7 @@ h1 {
   z-index: 2;
 }
 
-/* Modal styling */
+/* Modal */
 .modal {
   display: none;
   position: fixed;
@@ -100,7 +99,7 @@ h1 {
   color: #222;
   padding: 30px;
   border-radius: 15px;
-max-width: 640px; /* about 80% of previous width */
+  max-width: 640px;
   width: 90%;
   text-align: left;
   font-size: 1.1rem;
@@ -128,9 +127,9 @@ max-width: 640px; /* about 80% of previous width */
   display: block;
   font-size: 1.2rem;
   opacity: 0.7;
-  margin: 3px 0 15px 0; /* this will now actually show */
+  margin: 3px 0 15px 0;
 }
-  .tags {
+.tags {
   margin-top: 15px;
   font-style: italic;
   color: #555;
@@ -140,7 +139,7 @@ max-width: 640px; /* about 80% of previous width */
 </head>
 <body>
 
-<h1>HAVALADVENT CALENDAR</h1>
+<h1>HAVILADVENT CALENDAR</h1>
 <div class="grid" id="calendar"></div>
 
 <button id="resetAll" style="margin: 20px auto; display: block; padding: 10px 20px; font-size: 1rem; cursor: pointer; border-radius: 8px; border: none; background-color: #b22222; color: white; font-family: 'Patua One', serif;">
@@ -160,7 +159,7 @@ max-width: 640px; /* about 80% of previous width */
       <div id="modalMeta" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;"></div>
       <p id="modalDesc">Description goes here.</p>
       <p id="modalTags" class="tags"></p>
-<img id="modalStreaming" alt="Streaming Service" style="width: 110px; height: auto; margin-top: 10px; object-fit: contain;">
+      <img id="modalStreaming" alt="Streaming Service" style="width: 110px; height: auto; margin-top: 10px; object-fit: contain;">
     </div>
   </div>
 </div>
@@ -173,6 +172,17 @@ const startYear = 2001;
 const numDays = 25;
 const years = Array.from({length: numDays}, (_, i) => startYear + i);
 
+/* ✅ Rainbow color sets */
+const rainbow = [
+  { light: "#ffcccc", dark: "#cc0000" }, // red
+  { light: "#ffe5cc", dark: "#cc6600" }, // orange
+  { light: "#fff2cc", dark: "#b38f00" }, // yellow
+  { light: "#ccffcc", dark: "#009900" }, // green
+  { light: "#cce5ff", dark: "#0059b3" }, // blue
+  { light: "#e5ccff", dark: "#6600cc" }, // purple
+  { light: "#ffccff", dark: "#b300b3" }  // pink
+];
+  
 const films = [
 
 
@@ -206,16 +216,17 @@ const films = [
 
 
 
-  
-
-];
-
-// ✅ Build grid
 films.forEach((film, i) => {
   const square = document.createElement('div');
   square.classList.add('square');
   square.dataset.index = i;
-  square.innerHTML = `<span>${years[i]}</span>`;
+
+  /* ✅ Apply rainbow color to closed circles */
+  const color = rainbow[i % rainbow.length];
+  square.style.backgroundColor = color.light;
+  square.style.borderColor = color.dark;
+
+  square.innerHTML = `<span style="color:${color.dark}">${years[i]}</span>`;
 
   if (openedSquares[i]) revealSquare(square, film);
 
@@ -233,28 +244,38 @@ films.forEach((film, i) => {
   calendar.appendChild(square);
 });
 
-// ✅ Reveal a film square (shows image)
+/* ✅ Reveal square — image replaces color; only button keeps dark color */
 function revealSquare(square, film) {
   square.classList.add('revealed');
+
+  const index = square.dataset.index;
+  const color = rainbow[index % rainbow.length];
+
   square.innerHTML = `
-    <button class="squareResetBtn">×</button>
+    <button class="squareResetBtn" style="color:${color.dark}">×</button>
     <img src="${film.image}" alt="${film.title}">
   `;
+
   const closeBtn = square.querySelector('.squareResetBtn');
   closeBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     square.classList.remove('revealed');
-    square.innerHTML = `<span>${film.year}</span>`;
+
+    /* restore rainbow look */
+    square.style.backgroundColor = color.light;
+    square.style.borderColor = color.dark;
+    square.innerHTML = `<span style="color:${color.dark}">${film.year}</span>`;
+
     delete openedSquares[square.dataset.index];
     localStorage.setItem('openedSquaresHAVAL', JSON.stringify(openedSquares));
   });
+
   square.querySelector('img').addEventListener('click', e => {
     e.stopPropagation();
     openModal(film);
   });
 }
 
-// ✅ Modal controls
 const modal = document.getElementById('filmModal');
 const closeModal = document.getElementById('closeModal');
 
@@ -266,8 +287,8 @@ function openModal(film) {
   const metaDiv = document.getElementById('modalMeta');
   metaDiv.innerHTML = '';
   if (film.runtime) metaDiv.innerHTML += `<span>${film.runtime}</span>`;
-  if (film.rottenScore) metaDiv.innerHTML += `<img src='images/rotten_icon.png' alt='Rotten Tomatoes' style='height:20px;vertical-align:middle;'> <span>${film.rottenScore}</span>`;
-  if (film.letterboxdScore) metaDiv.innerHTML += `<img src='images/letterboxd_icon.png' alt='Letterboxd' style='height:20px;vertical-align:middle;'> <span>${film.letterboxdScore}</span>`;
+  if (film.rottenScore) metaDiv.innerHTML += `<img src='images/rotten_icon.png' style='height:20px;'> <span>${film.rottenScore}</span>`;
+  if (film.letterboxdScore) metaDiv.innerHTML += `<img src='images/letterboxd_icon.png' style='height:20px;'> <span>${film.letterboxdScore}</span>`;
 
   document.getElementById('modalTags').textContent = film.tags ? film.tags.join(' / ') : '';
 
@@ -283,7 +304,7 @@ function openModal(film) {
   modal.style.display = "flex";
 }
 
-closeModal.onclick = () => { modal.style.display = 'none'; };
+closeModal.onclick = () => modal.style.display = 'none';
 window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
 
 document.getElementById('resetAll').addEventListener('click', () => {
