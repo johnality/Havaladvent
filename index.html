@@ -143,6 +143,10 @@ h1 {
 <h1>HAVILADVENT CALENDAR</h1>
 <div class="grid" id="calendar"></div>
 
+<button id="revealAll" style="margin: 10px auto; display: block; padding: 10px 20px; font-size: 1rem; cursor: pointer; border-radius: 8px; border: none; background-color: #333; color: white; font-family: 'Fredoka', serif;">
+  REVEAL ALL
+</button>
+  
 <button id="resetAll" style="margin: 20px auto; display: block; padding: 10px 20px; font-size: 1rem; cursor: pointer; border-radius: 8px; border: none; background-color: #b22222; color: white; font-family: 'Fredoka', serif;">
   RESET
 </button>
@@ -306,6 +310,17 @@ function openModal(film) {
 closeModal.onclick = () => modal.style.display = 'none';
 window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
 
+/* ✅ Reveal All — opens every unrevealed square */
+document.getElementById('revealAll').addEventListener('click', () => {
+  document.querySelectorAll('.square').forEach((square, i) => {
+    if (!square.classList.contains('revealed')) {
+      revealSquare(square, films[i]);
+      openedSquares[i] = true;
+    }
+  });
+  localStorage.setItem('openedSquaresHAVAL', JSON.stringify(openedSquares));
+});
+  
 document.getElementById('resetAll').addEventListener('click', () => {
   localStorage.removeItem('openedSquaresHAVAL');
   location.reload();
